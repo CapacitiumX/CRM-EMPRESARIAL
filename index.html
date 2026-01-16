@@ -16,22 +16,20 @@
 
         .header { text-align: center; padding: 10px; margin-bottom: 10px; }
         
-        /* Caja Fuerte Estilo CapacitiumX */
+        /* Caja Fuerte Unificada */
         .vault-card { 
             background: #1e293b; color: white; padding: 20px; border-radius: 20px; 
-            margin-bottom: 25px; box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            margin-bottom: 25px; box-shadow: 0 8px 15px rgba(0,0,0,0.2); border: 1px solid #334155;
         }
         .vault-title { color: #fbbf24; font-weight: 800; font-size: 0.8rem; margin-bottom: 12px; display: block; text-transform: uppercase; }
         .btn-group-v { display: flex; gap: 10px; }
         .btn-v { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; }
 
-        /* Dashboard 4 Columnas */
         .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 25px; }
         .dash-card { background: white; padding: 12px 5px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .dash-num { font-size: 1.2rem; font-weight: 900; display: block; }
         .dash-label { font-size: 0.5rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
 
-        /* Tarjeta de Cliente */
         .client-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 6px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .status-prospecto { border-left-color: var(--pros-color); }
         .status-venta { border-left-color: var(--sales-color); }
@@ -43,7 +41,6 @@
         .btn-mail { background: #ea4335; }
         .btn-edit { background: #f1f5f9; color: #475569; }
 
-        /* Modal Formulario */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: flex-end; }
         .modal.active { display: flex; }
         .modal-content { background: white; width: 100%; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; animation: slideUp 0.3s ease; }
@@ -62,11 +59,13 @@
     </div>
 
     <div class="vault-card">
-        <span class="vault-title">🔐 CAJA FUERTE DE DATOS</span>
+        <span class="vault-title">🔐 SEGURIDAD: ARCHIVO Y CONTRASEÑA</span>
         <div class="btn-group-v">
-            <button class="btn-v" style="background:#fbbf24; color:black;" onclick="exportar()">RESPALDO</button>
-            <button class="btn-v" style="background:#10b981; color:white;" onclick="importar()">RESTAURAR</button>
+            <button class="btn-v" style="background:#fbbf24; color:black;" onclick="crearRespaldo()">RESPALDO</button>
+            <button class="btn-v" style="background:#10b981; color:white;" onclick="document.getElementById('fileIn').click()">RESTAURAR</button>
         </div>
+        <input type="file" id="fileIn" style="display:none" accept=".json" onchange="restaurarRespaldo(this)">
+        <p style="font-size:0.6rem; color:#94a3b8; margin-top:10px; text-align:center;">Crea un archivo protegido con tu contraseña secreta.</p>
     </div>
 
     <div class="dashboard">
@@ -82,65 +81,70 @@
 
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="margin:0 0 15px 0; color:var(--primary);">Datos del Cliente</h3>
+            <h3 id="modalTitle" style="margin:0 0 15px 0; color:var(--primary);">Registro</h3>
             <input type="text" id="f-name" placeholder="Nombre completo">
             <input type="tel" id="f-phone" placeholder="WhatsApp">
-            <input type="email" id="f-email" placeholder="Correo electrónico">
+            <input type="email" id="f-email" placeholder="Correo">
             <select id="f-status">
                 <option value="prospecto">🟡 Prospecto</option>
                 <option value="venta">🟢 Venta Cerrada</option>
                 <option value="perdido">🔴 No Interesado</option>
             </select>
-            <textarea id="f-notes" placeholder="Notas adicionales..." rows="3"></textarea>
-            
-            <button class="btn-save" onclick="guardarCliente()">GUARDAR CONTACTO</button>
+            <textarea id="f-notes" placeholder="Notas..." rows="3"></textarea>
+            <button class="btn-save" onclick="guardarCliente()">GUARDAR</button>
             <button id="btnEliminar" style="display:none; background:#fee2e2; color:red; border:none; width:100%; margin-top:10px; padding:12px; border-radius:10px; font-weight:bold;" onclick="eliminarCliente()">ELIMINAR</button>
             <button onclick="cerrarModal()" style="width:100%; background:none; border:none; padding:15px; color:#94a3b8; font-weight:bold;">Cerrar</button>
         </div>
     </div>
 
     <script>
-        let clientes = JSON.parse(localStorage.getItem('capx_crm_vFinal')) || [];
+        let clientes = JSON.parse(localStorage.getItem('capx_crm_final_v2')) || [];
         let editandoId = null;
 
-        // --- SISTEMA DE LLAVE CON UNA CONTRASEÑA ---
-        function exportar() {
-            if (clientes.length === 0) return alert("No hay datos que guardar.");
-            const clave = prompt("INVENTA UNA CONTRASEÑA PARA TU RESPALDO:");
-            if (!clave) return;
+        // --- LÓGICA DE SEGURIDAD PROFESIONAL ---
+        function crearRespaldo() {
+            if (clientes.length === 0) return alert("No hay datos.");
+            const pass = prompt("INVENTA UNA CONTRASEÑA PARA ESTE ARCHIVO:");
+            if (!pass) return;
 
-            const datosCifrados = btoa(unescape(encodeURIComponent(clave + "|" + JSON.stringify(clientes))));
-            
-            const tmp = document.createElement("textarea");
-            document.body.appendChild(tmp);
-            tmp.value = datosCifrados;
-            tmp.select();
-            document.execCommand("copy");
-            document.body.removeChild(tmp);
-            
-            alert("✅ ¡LLAVE COPIADA!\n\nGuarda el código largo en tus notas. Tu contraseña es: " + clave);
+            // Ciframos los datos con la contraseña
+            const dataToSave = {
+                seguridad: btoa(pass), // Guardamos la contraseña cifrada
+                datos: clientes
+            };
+
+            const blob = new Blob([JSON.stringify(dataToSave)], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `RESPALDO_CRM_${new Date().toLocaleDateString()}.json`;
+            a.click();
+            alert("✅ Archivo de respaldo descargado. Guárdalo bien.");
         }
 
-        function importar() {
-            const llave = prompt("PEGA AQUÍ TU LLAVE (El código largo):");
-            if (!llave) return;
-            const claveIntento = prompt("ESCRIBE LA CONTRASEÑA DE ESTA LLAVE:");
-
-            try {
-                const decodificado = decodeURIComponent(escape(atob(llave)));
-                const partes = decodificado.split("|");
-                if (partes[0] === claveIntento) {
-                    clientes = JSON.parse(partes[1]);
-                    localStorage.setItem('capx_crm_vFinal', JSON.stringify(clientes));
-                    renderizar();
-                    alert("🎉 Restauración exitosa.");
-                } else {
-                    alert("❌ Contraseña incorrecta.");
-                }
-            } catch (e) { alert("❌ Llave no válida."); }
+        function restaurarRespaldo(input) {
+            if (!input.files || !input.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const contenido = JSON.parse(e.target.result);
+                    const passIntento = prompt("INGRESA LA CONTRASEÑA DE ESTE ARCHIVO:");
+                    
+                    if (btoa(passIntento) === contenido.seguridad) {
+                        clientes = contenido.datos;
+                        localStorage.setItem('capx_crm_final_v2', JSON.stringify(clientes));
+                        renderizar();
+                        alert("🎉 Restauración completa con éxito.");
+                    } else {
+                        alert("❌ Contraseña incorrecta. Acceso denegado.");
+                    }
+                } catch (err) { alert("❌ El archivo no es un respaldo válido."); }
+            };
+            reader.readAsText(input.files[0]);
+            input.value = ""; // Limpiar input
         }
 
-        // --- FUNCIONES DEL CRM ---
+        // --- LÓGICA DEL CRM ---
         function abrirModal(id = null) {
             document.getElementById('modal').classList.add('active');
             if(id) {
@@ -163,8 +167,7 @@
 
         function guardarCliente() {
             const nombre = document.getElementById('f-name').value;
-            if(!nombre) return alert("El nombre es obligatorio");
-            
+            if(!nombre) return alert("Nombre obligatorio");
             const datos = {
                 id: editandoId || Date.now(),
                 name: nombre,
@@ -173,21 +176,19 @@
                 status: document.getElementById('f-status').value,
                 notes: document.getElementById('f-notes').value
             };
-
             if(editandoId) {
                 const i = clientes.findIndex(x => x.id == editandoId);
                 clientes[i] = datos;
             } else { clientes.push(datos); }
-
-            localStorage.setItem('capx_crm_vFinal', JSON.stringify(clientes));
+            localStorage.setItem('capx_crm_final_v2', JSON.stringify(clientes));
             renderizar();
             cerrarModal();
         }
 
         function eliminarCliente() {
-            if(confirm("¿Eliminar contacto definitivamente?")) {
+            if(confirm("¿Eliminar definitivamente?")) {
                 clientes = clientes.filter(x => x.id != editandoId);
-                localStorage.setItem('capx_crm_vFinal', JSON.stringify(clientes));
+                localStorage.setItem('capx_crm_final_v2', JSON.stringify(clientes));
                 renderizar();
                 cerrarModal();
             }
@@ -197,13 +198,12 @@
             const listado = document.getElementById('clientList');
             listado.innerHTML = '';
             let p=0, v=0, n=0;
-
             clientes.slice().reverse().forEach(c => {
                 if(c.status==='prospecto') p++; else if(c.status==='venta') v++; else n++;
                 const item = document.createElement('div');
                 item.className = `client-card status-${c.status}`;
                 item.innerHTML = `
-                    <div style="font-weight:bold; font-size:1.1rem; color:var(--primary)">${c.name}</div>
+                    <div style="font-weight:bold; color:var(--primary); font-size:1.1rem;">${c.name}</div>
                     <div style="color:#64748b; font-size:0.85rem;">${c.phone}</div>
                     <div class="action-grid">
                         <button class="btn-act btn-wa" onclick="enviarWA('${c.phone}', '${c.name}')">WhatsApp</button>
@@ -220,12 +220,12 @@
         }
 
         function enviarWA(tel, nom) {
-            const m = window.encodeURIComponent(`Hola ${nom}, un gusto saludarte. Te contacto respecto a la información solicitada.`);
+            const m = window.encodeURIComponent(`Hola ${nom}, te contacto respecto a la información solicitada.`);
             window.open(`https://wa.me/52${tel.replace(/\D/g,'')}?text=${m}`);
         }
 
         function enviarMail(cor, nom) {
-            window.location.href = `mailto:${cor}?subject=Seguimiento&body=Hola ${nom}, te envío la información solicitada.`;
+            window.location.href = `mailto:${cor}?subject=Seguimiento&body=Hola ${nom}, envío información.`;
         }
 
         renderizar();
