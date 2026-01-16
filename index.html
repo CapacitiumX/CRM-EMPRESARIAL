@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CAPACITIUMX CRM</title>
+    <title>CAPACITIUMX CRM PRO</title>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1e3a8a">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
 
     <style>
         :root { --primary: #1e3a8a; --bg: #f8fafc; --pros-color: #f59e0b; --sales-color: #10b981; --lost-color: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 120px; }
 
-        .header { text-align: center; padding: 10px; margin-bottom: 10px; }
+        .header { text-align: center; padding: 10px; }
         
-        /* Panel de Seguridad */
+        /* Panel de Seguridad Estilo Formulario */
         .vault-card { 
             background: #1e293b; color: white; padding: 20px; border-radius: 20px; 
-            margin-bottom: 25px; box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            margin-bottom: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
-        .vault-title { color: #fbbf24; font-weight: 800; font-size: 0.8rem; margin-bottom: 12px; display: block; text-transform: uppercase; }
-        .btn-group-v { display: flex; gap: 10px; }
-        .btn-v { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; }
-
-        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 25px; }
+        .vault-title { color: #fbbf24; font-weight: 800; font-size: 0.8rem; margin-bottom: 15px; display: block; text-transform: uppercase; }
+        
+        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
         .dash-card { background: white; padding: 12px 5px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .dash-num { font-size: 1.2rem; font-weight: 900; display: block; }
         .dash-label { font-size: 0.5rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
 
-        .client-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 6px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .client-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 6px solid #cbd5e1; }
         .status-prospecto { border-left-color: var(--pros-color); }
         .status-venta { border-left-color: var(--sales-color); }
         .status-perdido { border-left-color: var(--lost-color); }
@@ -36,14 +39,14 @@
         .btn-mail { background: #ea4335; }
         .btn-edit { background: #f1f5f9; color: #475569; }
 
+        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f8fafc; }
+        
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: flex-end; }
         .modal.active { display: flex; }
         .modal-content { background: white; width: 100%; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; }
 
-        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f8fafc; }
-        .btn-save { width: 100%; padding: 18px; border: none; border-radius: 12px; font-weight: bold; background: var(--primary); color: white; font-size: 1rem; cursor: pointer; }
-
-        .fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--primary); border-radius: 50%; color: white; border: none; font-size: 35px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); z-index: 99; cursor: pointer; }
+        .btn-main { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; color: white; background: var(--primary); cursor: pointer; }
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--primary); border-radius: 50%; color: white; border: none; font-size: 35px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); z-index: 99; }
     </style>
 </head>
 <body>
@@ -53,10 +56,10 @@
     </div>
 
     <div class="vault-card">
-        <span class="vault-title">🔐 SEGURIDAD: LLAVE Y CONTRASEÑA</span>
-        <div class="btn-group-v">
-            <button class="btn-v" style="background:#fbbf24; color:black;" onclick="exportarCRM()">RESPALDO</button>
-            <button class="btn-v" style="background:#10b981; color:white;" onclick="importarCRM()">RESTAURAR</button>
+        <span class="vault-title">🔐 CAJA FUERTE DE RESPALDO</span>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="generarLlave()" style="flex:1; padding:12px; border-radius:10px; border:none; background:#fbbf24; font-weight:bold; font-size:0.7rem;">CREAR LLAVE</button>
+            <button onclick="document.getElementById('restaurarMod').classList.add('active')" style="flex:1; padding:12px; border-radius:10px; border:none; background:#10b981; color:white; font-weight:bold; font-size:0.7rem;">RESTAURAR</button>
         </div>
     </div>
 
@@ -67,114 +70,112 @@
         <div class="dash-card"><span class="dash-num" id="s-total" style="color:var(--primary)">0</span><span class="dash-label">Total</span></div>
     </div>
 
-    <div id="clientList"></div>
+    <div id="list"></div>
 
-    <button class="fab" onclick="abrirModal()">+</button>
+    <button class="fab" onclick="abrirForm()">+</button>
 
-    <div class="modal" id="modal">
+    <div class="modal" id="modalForm">
         <div class="modal-content">
-            <h3 id="modalTitle" style="margin:0 0 15px 0; color:var(--primary);">Detalles</h3>
-            <input type="text" id="f-name" placeholder="Nombre completo">
+            <h3>Datos Cliente</h3>
+            <input type="text" id="f-name" placeholder="Nombre">
             <input type="tel" id="f-phone" placeholder="WhatsApp">
             <input type="email" id="f-email" placeholder="Correo">
             <select id="f-status">
                 <option value="prospecto">🟡 Prospecto</option>
-                <option value="venta">🟢 Venta Cerrada</option>
+                <option value="venta">🟢 Venta</option>
                 <option value="perdido">🔴 No Interesado</option>
             </select>
-            <textarea id="f-notes" placeholder="Notas..." rows="3"></textarea>
-            
-            <button class="btn-save" onclick="guardarCliente()">GUARDAR</button>
-            <button id="btnEliminar" style="display:none; background:#fee2e2; color:red; border:none; width:100%; margin-top:10px; padding:12px; border-radius:10px; font-weight:bold;" onclick="eliminarCliente()">ELIMINAR</button>
-            <button onclick="cerrarModal()" style="width:100%; background:none; border:none; padding:15px; color:#94a3b8; font-weight:bold;">Cerrar</button>
+            <textarea id="f-notes" placeholder="Notas..."></textarea>
+            <button class="btn-main" onclick="guardar()">GUARDAR</button>
+            <button id="btnElim" style="display:none; color:red; background:none; border:none; width:100%; margin-top:10px;" onclick="eliminar()">Eliminar Contacto</button>
+            <button onclick="document.getElementById('modalForm').classList.remove('active')" style="width:100%; background:none; border:none; padding:10px;">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="modal" id="restaurarMod">
+        <div class="modal-content">
+            <h3>Restaurar Historial</h3>
+            <textarea id="llavePegar" placeholder="Pega aquí tu código de Llave Maestra..." style="height:80px; font-size:10px;"></textarea>
+            <input type="password" id="passPegar" placeholder="Tu Contraseña Secreta">
+            <button class="btn-main" style="background:#10b981" onclick="procesarRestauracion()">RESTAURAR AHORA</button>
+            <button onclick="document.getElementById('restaurarMod').classList.remove('active')" style="width:100%; background:none; border:none; padding:10px;">Cancelar</button>
         </div>
     </div>
 
     <script>
-        let clientes = JSON.parse(localStorage.getItem('capx_crm_final_v3')) || [];
-        let editandoId = null;
+        let clientes = JSON.parse(localStorage.getItem('crm_vFinal_capx')) || [];
+        let editId = null;
 
-        function exportarCRM() {
-            if (clientes.length === 0) return alert("No hay datos.");
-            const pass = prompt("INVENTA TU CONTRASEÑA:");
-            if (!pass) return;
-            const llave = btoa(unescape(encodeURIComponent(pass + "|" + JSON.stringify(clientes))));
-            const tmp = document.createElement("textarea");
-            document.body.appendChild(tmp);
-            tmp.value = llave;
-            tmp.select();
-            document.execCommand("copy");
-            document.body.removeChild(tmp);
-            alert("✅ LLAVE COPIADA AL PORTAPAPELES.\n\nGuarda este código en un lugar seguro. Tu contraseña es: " + pass);
+        function generarLlave() {
+            if(clientes.length === 0) return alert("No hay datos.");
+            const p = prompt("INVENTA TU CONTRASEÑA:");
+            if(!p) return;
+            const llave = btoa(unescape(encodeURIComponent(p + "|" + JSON.stringify(clientes))));
+            
+            // Copiar automático
+            const t = document.createElement("textarea");
+            document.body.appendChild(t); t.value = llave; t.select();
+            document.execCommand("copy"); document.body.removeChild(t);
+            
+            alert("🔑 LLAVE GENERADA Y COPIADA.\n\nSe ha copiado un código a tu portapapeles. Guárdalo en tus notas.\nTu contraseña es: " + p);
         }
 
-        function importarCRM() {
-            const llave = prompt("PEGA AQUÍ TU LLAVE:");
-            if (!llave) return;
-            const pass = prompt("ESCRIBE TU CONTRASEÑA:");
+        function procesarRestauracion() {
+            const llave = document.getElementById('llavePegar').value;
+            const pass = document.getElementById('passPegar').value;
             try {
                 const dec = decodeURIComponent(escape(atob(llave)));
                 const partes = dec.split("|");
-                if (partes[0] === pass) {
+                if(partes[0] === pass) {
                     clientes = JSON.parse(partes[1]);
-                    localStorage.setItem('capx_crm_final_v3', JSON.stringify(clientes));
-                    renderizar();
-                    alert("🎉 Restaurado.");
+                    localStorage.setItem('crm_vFinal_capx', JSON.stringify(clientes));
+                    render();
+                    document.getElementById('restaurarMod').classList.remove('active');
+                    alert("🎉 Historial recuperado.");
                 } else { alert("❌ Contraseña incorrecta."); }
-            } catch (e) { alert("❌ Llave inválida."); }
+            } catch(e) { alert("❌ La llave no es válida."); }
         }
 
-        function abrirModal(id = null) {
-            document.getElementById('modal').classList.add('active');
+        function abrirForm(id = null) {
+            document.getElementById('modalForm').classList.add('active');
             if(id) {
-                editandoId = id;
+                editId = id;
                 const c = clientes.find(x => x.id == id);
                 document.getElementById('f-name').value = c.name;
                 document.getElementById('f-phone').value = c.phone;
                 document.getElementById('f-email').value = c.email;
                 document.getElementById('f-status').value = c.status;
                 document.getElementById('f-notes').value = c.notes;
-                document.getElementById('btnEliminar').style.display = 'block';
+                document.getElementById('btnElim').style.display = 'block';
             } else {
-                editandoId = null;
-                document.querySelectorAll('#modal input, #modal textarea').forEach(i => i.value = '');
-                document.getElementById('btnEliminar').style.display = 'none';
+                editId = null;
+                document.querySelectorAll('#modalForm input, #modalForm textarea').forEach(i => i.value = '');
+                document.getElementById('btnElim').style.display = 'none';
             }
         }
 
-        function cerrarModal() { document.getElementById('modal').classList.remove('active'); }
-
-        function guardarCliente() {
+        function guardar() {
             const n = document.getElementById('f-name').value;
             if(!n) return;
-            const d = {
-                id: editandoId || Date.now(),
-                name: n,
-                phone: document.getElementById('f-phone').value,
-                email: document.getElementById('f-email').value,
-                status: document.getElementById('f-status').value,
-                notes: document.getElementById('f-notes').value
-            };
-            if(editandoId) {
-                const i = clientes.findIndex(x => x.id == editandoId);
-                clientes[i] = d;
-            } else { clientes.push(d); }
-            localStorage.setItem('capx_crm_final_v3', JSON.stringify(clientes));
-            renderizar();
-            cerrarModal();
+            const d = { id: editId || Date.now(), name: n, phone: document.getElementById('f-phone').value, email: document.getElementById('f-email').value, status: document.getElementById('f-status').value, notes: document.getElementById('f-notes').value };
+            if(editId) { const i = clientes.findIndex(x => x.id == editId); clientes[i] = d; }
+            else { clientes.push(d); }
+            localStorage.setItem('crm_vFinal_capx', JSON.stringify(clientes));
+            render();
+            document.getElementById('modalForm').classList.remove('active');
         }
 
-        function eliminarCliente() {
+        function eliminar() {
             if(confirm("¿Eliminar?")) {
-                clientes = clientes.filter(x => x.id != editandoId);
-                localStorage.setItem('capx_crm_final_v3', JSON.stringify(clientes));
-                renderizar();
-                cerrarModal();
+                clientes = clientes.filter(x => x.id != editId);
+                localStorage.setItem('crm_vFinal_capx', JSON.stringify(clientes));
+                render();
+                document.getElementById('modalForm').classList.remove('active');
             }
         }
 
-        function renderizar() {
-            const list = document.getElementById('clientList');
+        function render() {
+            const list = document.getElementById('list');
             list.innerHTML = '';
             let p=0, v=0, n=0;
             clientes.slice().reverse().forEach(c => {
@@ -182,11 +183,11 @@
                 const item = document.createElement('div');
                 item.className = `client-card status-${c.status}`;
                 item.innerHTML = `
-                    <div style="font-weight:bold; color:var(--primary); font-size:1.1rem;">${c.name}</div>
+                    <div style="font-weight:bold; font-size:1.1rem; color:var(--primary)">${c.name}</div>
                     <div class="action-grid">
-                        <button class="btn-act btn-wa" onclick="window.open('https://wa.me/52${c.phone.replace(/\D/g,'')}')">WA</button>
-                        <button class="btn-act btn-mail" onclick="window.location.href='mailto:${c.email}'">Mail</button>
-                        <button class="btn-act btn-edit" onclick="abrirModal('${c.id}')">Editar</button>
+                        <button class="btn-act btn-wa" onclick="window.open('https://wa.me/52${c.phone.replace(/\D/g,'')}')">WhatsApp</button>
+                        <button class="btn-act btn-mail" onclick="window.location.href='mailto:${c.email}'">Email</button>
+                        <button class="btn-act btn-edit" onclick="abrirForm('${c.id}')">Editar</button>
                     </div>
                 `;
                 list.appendChild(item);
@@ -196,7 +197,7 @@
             document.getElementById('s-lost').innerText = n;
             document.getElementById('s-total').innerText = clientes.length;
         }
-        renderizar();
+        render();
     </script>
 </body>
 </html>
