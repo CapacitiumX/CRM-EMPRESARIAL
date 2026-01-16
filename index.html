@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CAPACITIUMX CRM</title>
 
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1e3a8a">
+    
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
+
+    <script>
+        // GENERADOR DEL MANIFEST (El que crea el instalador y el icono)
+        const manifest = {
+            "name": "CapacitiumX CRM PRO",
+            "short_name": "CapX CRM",
+            "start_url": "./",
+            "display": "standalone",
+            "background_color": "#f8fafc",
+            "theme_color": "#1e3a8a",
+            "icons": [{
+                "src": "https://cdn-icons-png.flaticon.com/512/3652/3652191.png",
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "any maskable"
+            }]
+        };
+        const stringManifest = JSON.stringify(manifest);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestURL;
+        document.head.appendChild(link);
+
+        // Registro de Service Worker para que funcione como App Offline
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));`;
+                const swBlob = new Blob([swCode], {type: 'application/javascript'});
+                navigator.serviceWorker.register(URL.createObjectURL(swBlob));
+            });
+        }
+    </script>
+
     <style>
         :root { --primary: #1e3a8a; --bg: #f8fafc; --pros-color: #f59e0b; --sales-color: #10b981; --lost-color: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 120px; }
@@ -64,7 +106,7 @@
     </div>
 
     <div class="dashboard">
-        <div class="dash-card"><span class="dash-num" id="s-pros" style="color:var(--pros-color)">0</span><span class="dash-label">Leads</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-pros" style="color:var(--pros-color)">0</span><span class="dash-label">Prospectos</span></div>
         <div class="dash-card"><span class="dash-num" id="s-sales" style="color:var(--sales-color)">0</span><span class="dash-label">Ventas</span></div>
         <div class="dash-card"><span class="dash-num" id="s-lost" style="color:var(--lost-color)">0</span><span class="dash-label">No Interesado</span></div>
         <div class="dash-card"><span class="dash-num" id="s-total" style="color:var(--primary)">0</span><span class="dash-label">Total</span></div>
@@ -75,107 +117,92 @@
 
     <div class="modal" id="modalSec">
         <div class="modal-content">
-            <h3 id="secTitle" style="margin-top:0;">Seguridad</h3>
-            
+            <h3 id="secTitle">Seguridad</h3>
             <div id="crearZone">
-                <p style="font-size:0.8rem; color:#64748b;">Escribe una palabra clave y una contraseña para empaquetar tus datos.</p>
-                <input type="text" id="secUser" placeholder="Tu Nombre o ID (Ej: Roberto)">
+                <input type="text" id="secUser" placeholder="Tu Nombre o ID">
                 <input type="password" id="secPass" placeholder="Tu Contraseña Secreta">
                 <button class="btn-main btn-gold" onclick="generarTodo()">GENERAR CÓDIGO MAESTRO</button>
-                <div id="displayKey" class="key-box">Aquí aparecerá tu código...</div>
-                <p style="font-size:0.6rem; color:red; margin-top:5px;">* Debes copiar este código y guardarlo. Es tu única forma de recuperar datos.</p>
+                <div id="displayKey" class="key-box" onclick="copiarAlClip()">Aquí aparecerá tu código...</div>
             </div>
-
             <div id="restaurarZone" style="display:none;">
-                <p style="font-size:0.8rem; color:#64748b;">Pega el código generado anteriormente para recuperar tu historial.</p>
                 <textarea id="inputKey" placeholder="Pega el Código Maestro aquí..." style="height:100px; font-size:10px;"></textarea>
-                <input type="text" id="inputUser" placeholder="Tu Nombre o ID (Debe coincidir)">
-                <input type="password" id="inputPass" placeholder="Tu Contraseña Secreta">
+                <input type="text" id="inputUser" placeholder="Nombre o ID">
+                <input type="password" id="inputPass" placeholder="Contraseña">
                 <button class="btn-main btn-green" onclick="procesarRestaurar()">RESTAURAR AHORA</button>
             </div>
-
-            <button onclick="cerrarModals()" style="width:100%; background:none; border:none; padding:15px; margin-top:10px;">Cerrar</button>
+            <button onclick="cerrarModals()" style="width:100%; background:none; border:none; padding:15px;">Cerrar</button>
         </div>
     </div>
 
     <div class="modal" id="modalForm">
         <div class="modal-content">
-            <h3 id="formTitle">Registro de Cliente</h3>
-            <input type="text" id="f-name" placeholder="Nombre completo">
+            <h3 id="formTitle">Registro</h3>
+            <input type="text" id="f-name" placeholder="Nombre">
             <input type="tel" id="f-phone" placeholder="WhatsApp">
             <input type="email" id="f-email" placeholder="Correo">
             <select id="f-status">
                 <option value="prospecto">🟡 Prospecto</option>
-                <option value="venta">🟢 Venta Cerrada</option>
+                <option value="venta">🟢 Venta</option>
                 <option value="perdido">🔴 No Interesado</option>
             </select>
             <textarea id="f-notes" placeholder="Notas..."></textarea>
             <button class="btn-main" onclick="guardar()">GUARDAR</button>
             <button id="btnElim" style="display:none; color:red; background:none; border:none; width:100%; margin-top:10px;" onclick="eliminar()">Eliminar</button>
-            <button onclick="cerrarModals()" style="width:100%; background:none; border:none; padding:10px;">Cancelar</button>
+            <button onclick="cerrarModals()" style="width:100%; background:none; border:none; padding:10px;">Cerrar</button>
         </div>
     </div>
 
     <script>
-        let clientes = JSON.parse(localStorage.getItem('crm_vFinal_v4')) || [];
+        let clientes = JSON.parse(localStorage.getItem('crm_vFinal_v5')) || [];
         let editId = null;
 
         function abrirModalSec(modo) {
             document.getElementById('modalSec').classList.add('active');
+            const cZone = document.getElementById('crearZone');
+            const rZone = document.getElementById('restaurarZone');
             if(modo === 'crear') {
                 document.getElementById('secTitle').innerText = "Crear Respaldo";
-                document.getElementById('crearZone').style.display = 'block';
-                document.getElementById('restaurarZone').style.display = 'none';
+                cZone.style.display = 'block'; rZone.style.display = 'none';
             } else {
                 document.getElementById('secTitle').innerText = "Restaurar Historial";
-                document.getElementById('crearZone').style.display = 'none';
-                document.getElementById('restaurarZone').style.display = 'block';
+                cZone.style.display = 'none'; rZone.style.display = 'block';
             }
         }
 
         function generarTodo() {
             const u = document.getElementById('secUser').value;
             const p = document.getElementById('secPass').value;
-            if(!u || !p || clientes.length === 0) return alert("Llena los campos y asegúrate de tener clientes registrados.");
-            
-            // Empaquetamos todo con el usuario y contraseña visibles
+            if(!u || !p || clientes.length === 0) return alert("Faltan datos o historial.");
             const masterStr = u + "|" + p + "|" + JSON.stringify(clientes);
-            const masterKey = btoa(unescape(encodeURIComponent(masterStr)));
-            
-            document.getElementById('displayKey').innerText = masterKey;
-            alert("¡CÓDIGO GENERADO! Copia el cuadro verde.");
+            document.getElementById('displayKey').innerText = btoa(unescape(encodeURIComponent(masterStr)));
+        }
+
+        function copiarAlClip() {
+            const txt = document.getElementById('displayKey').innerText;
+            navigator.clipboard.writeText(txt).then(() => alert("Código copiado."));
         }
 
         function procesarRestaurar() {
             const llave = document.getElementById('inputKey').value;
             const u = document.getElementById('inputUser').value;
             const p = document.getElementById('inputPass').value;
-            
             try {
                 const dec = decodeURIComponent(escape(atob(llave)));
                 const partes = dec.split("|");
-                
                 if(partes[0] === u && partes[1] === p) {
                     clientes = JSON.parse(partes[2]);
-                    localStorage.setItem('crm_vFinal_v4', JSON.stringify(clientes));
-                    render();
-                    cerrarModals();
-                    alert("✅ Éxito: Datos recuperados.");
-                } else {
-                    alert("❌ Error: El usuario o la contraseña no coinciden con este código.");
-                }
-            } catch(e) { alert("❌ El código no es válido."); }
+                    localStorage.setItem('crm_vFinal_v5', JSON.stringify(clientes));
+                    render(); cerrarModals(); alert("✅ Recuperado.");
+                } else { alert("❌ Usuario o Clave incorrectos."); }
+            } catch(e) { alert("❌ Código no válido."); }
         }
 
-        function cerrarModals() {
-            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-        }
+        function cerrarModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
 
         function abrirForm(id = null) {
             document.getElementById('modalForm').classList.add('active');
             if(id) {
-                editId = id;
-                const c = clientes.find(x => x.id == id);
+                editId = id; const c = clientes.find(x => x.id == id);
                 document.getElementById('f-name').value = c.name;
                 document.getElementById('f-phone').value = c.phone;
                 document.getElementById('f-email').value = c.email;
@@ -183,35 +210,28 @@
                 document.getElementById('f-notes').value = c.notes;
                 document.getElementById('btnElim').style.display = 'block';
             } else {
-                editId = null;
-                document.querySelectorAll('#modalForm input, #modalForm textarea').forEach(i => i.value = '');
+                editId = null; document.querySelectorAll('#modalForm input, #modalForm textarea').forEach(i => i.value = '');
                 document.getElementById('btnElim').style.display = 'none';
             }
         }
 
         function guardar() {
-            const n = document.getElementById('f-name').value;
-            if(!n) return;
+            const n = document.getElementById('f-name').value; if(!n) return;
             const d = { id: editId || Date.now(), name: n, phone: document.getElementById('f-phone').value, email: document.getElementById('f-email').value, status: document.getElementById('f-status').value, notes: document.getElementById('f-notes').value };
             if(editId) { const i = clientes.findIndex(x => x.id == editId); clientes[i] = d; }
             else { clientes.push(d); }
-            localStorage.setItem('crm_vFinal_v4', JSON.stringify(clientes));
-            render();
-            cerrarModals();
+            localStorage.setItem('crm_vFinal_v5', JSON.stringify(clientes)); render(); cerrarModals();
         }
 
         function eliminar() {
             if(confirm("¿Eliminar?")) {
                 clientes = clientes.filter(x => x.id != editId);
-                localStorage.setItem('crm_vFinal_v4', JSON.stringify(clientes));
-                render();
-                cerrarModals();
+                localStorage.setItem('crm_vFinal_v5', JSON.stringify(clientes)); render(); cerrarModals();
             }
         }
 
         function render() {
-            const list = document.getElementById('list');
-            list.innerHTML = '';
+            const list = document.getElementById('list'); list.innerHTML = '';
             let p=0, v=0, n=0;
             clientes.slice().reverse().forEach(c => {
                 if(c.status==='prospecto') p++; else if(c.status==='venta') v++; else n++;
@@ -223,8 +243,7 @@
                         <button class="btn-act btn-wa" onclick="window.open('https://wa.me/52${c.phone.replace(/\D/g,'')}')">WA</button>
                         <button class="btn-act btn-mail" onclick="window.location.href='mailto:${c.email}'">Mail</button>
                         <button class="btn-act btn-edit" onclick="abrirForm('${c.id}')">Editar</button>
-                    </div>
-                `;
+                    </div>`;
                 list.appendChild(item);
             });
             document.getElementById('s-pros').innerText = p;
