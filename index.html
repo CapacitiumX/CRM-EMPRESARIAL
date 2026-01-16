@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CAPACITIUMX CRM PRO</title>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1e3a8a">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
+
+    <style>
+        :root { 
+            --primary: #1e3a8a; 
+            --bg: #f8fafc; 
+            --pros-color: #f59e0b; 
+            --sales-color: #10b981; 
+            --lost-color: #ef4444; 
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 120px; }
+
+        .header { text-align: center; padding: 10px; }
+        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+        .dash-card { background: white; padding: 10px 5px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .dash-num { font-size: 1.2rem; font-weight: 900; display: block; }
+        .dash-label { font-size: 0.5rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
+
+        /* Sección de Llave de Seguridad */
+        .backup-zone { background: #e2e8f0; padding: 15px; border-radius: 15px; margin-bottom: 20px; text-align: center; }
+        .btn-key { background: #475569; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; cursor: pointer; margin: 5px; }
+
+        .client-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border-left: 6px solid #cbd5e1; }
+        .status-prospecto { border-left-color: var(--pros-color); }
+        .status-venta { border-left-color: var(--sales-color); }
+        .status-perdido { border-left-color: var(--lost-color); }
+
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .btn-act { border: none; padding: 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; color: white; }
+        .btn-wa { background: #25d366; }
+        .btn-mail { background: #ea4335; }
+        .btn-edit { background: #f1f5f9; color: #475569; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: flex-end; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; width: 100%; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; }
+
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
+        .btn-save { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; background: var(--primary); color: white; }
+        
+        .fab { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--primary); border-radius: 50%; color: white; border: none; font-size: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2 style="margin:0; color:var(--primary); font-weight: 900;">CAPACITIUMX CRM</h2>
+    </div>
+
+    <div class="backup-zone">
+        <div style="font-size: 0.7rem; font-weight: bold; color: #1e3a8a; margin-bottom: 8px;">🔐 SEGURIDAD DE DATOS</div>
+        <button class="btn-key" onclick="generateKey()">GENERAR LLAVE DE RESPALDO</button>
+        <button class="btn-key" onclick="importKey()">RESTAURAR CON LLAVE</button>
+    </div>
+
+    <div class="dashboard">
+        <div class="dash-card"><span class="dash-num" id="s-pros" style="color:var(--pros-color)">0</span><span class="dash-label">Leads</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-sales" style="color:var(--sales-color)">0</span><span class="dash-label">Ventas</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-lost" style="color:var(--lost-color)">0</span><span class="dash-label">Perdido</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-total" style="color:var(--primary)">0</span><span class="dash-label">Cartera</span></div>
+    </div>
+
+    <div id="list"></div>
+
+    <button class="fab" onclick="openM()">+</button>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Registro</h3>
+            <input type="text" id="name" placeholder="Nombre">
+            <input type="email" id="email" placeholder="Correo">
+            <input type="tel" id="phone" placeholder="WhatsApp">
+            <select id="status">
+                <option value="prospecto">🟡 Prospecto</option>
+                <option value="venta">🟢 Venta</option>
+                <option value="perdido">🔴 No Interesado</option>
+            </select>
+            <textarea id="notes" placeholder="Notas..."></textarea>
+            <button class="btn-save" onclick="save()">GUARDAR</button>
+            <button id="delBtn" style="display:none; background:#fee2e2; color:red; border:none; width:100%; margin-top:10px; padding:10px; border-radius:10px;" onclick="remove()">ELIMINAR</button>
+            <button onclick="closeM()" style="width:100%; background:none; border:none; padding:10px;">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        let clients = JSON.parse(localStorage.getItem('crm_key_v1')) || [];
+        let currentId = null;
+
+        // --- FUNCIONES DE LA LLAVE DE SEGURIDAD ---
+        function generateKey() {
+            if (clients.length === 0) return alert("No hay datos para respaldar.");
+            const dataStr = JSON.stringify(clients);
+            const key = btoa(unescape(encodeURIComponent(dataStr))); // Crea la llave encriptada
+            
+            // Opción de copiar al portapapeles
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = key;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            
+            alert("🔑 ¡LLAVE GENERADA Y COPIADA!\n\nGuarda este código largo en tus notas o WhatsApp. Si borras la app, usa este código para recuperar tus " + clients.length + " clientes.");
+        }
+
+        function importKey() {
+            const key = prompt("Pega aquí tu LLAVE DE RESPALDO:");
+            if (key) {
+                try {
+                    const decodedData = decodeURIComponent(escape(atob(key)));
+                    const importedClients = JSON.parse(decodedData);
+                    if (Array.isArray(importedClients)) {
+                        if(confirm("Se importarán " + importedClients.length + " contactos. ¿Deseas continuar?")) {
+                            clients = importedClients;
+                            localStorage.setItem('crm_key_v1', JSON.stringify(clients));
+                            render();
+                            alert("✅ Restauración exitosa.");
+                        }
+                    }
+                } catch (e) {
+                    alert("❌ La llave no es válida.");
+                }
+            }
+        }
+
+        // --- LÓGICA DEL CRM ---
+        function openM(id = null) {
+            document.getElementById('modal').classList.add('active');
+            if(id) {
+                currentId = id;
+                const c = clients.find(x => x.id == id);
+                document.getElementById('name').value = c.name;
+                document.getElementById('email').value = c.email;
+                document.getElementById('phone').value = c.phone;
+                document.getElementById('status').value = c.status;
+                document.getElementById('notes').value = c.notes;
+                document.getElementById('delBtn').style.display = 'block';
+            } else {
+                currentId = null;
+                document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+                document.getElementById('delBtn').style.display = 'none';
+            }
+        }
+
+        function closeM() { document.getElementById('modal').classList.remove('active'); }
+
+        function save() {
+            const name = document.getElementById('name').value;
+            if(!name) return;
+            const data = {
+                id: currentId || Date.now(),
+                name: name,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                status: document.getElementById('status').value,
+                notes: document.getElementById('notes').value
+            };
+            if(currentId) {
+                const idx = clients.findIndex(x => x.id == currentId);
+                clients[idx] = data;
+            } else { clients.push(data); }
+            localStorage.setItem('crm_key_v1', JSON.stringify(clients));
+            render();
+            closeM();
+        }
+
+        function remove() {
+            if(confirm("¿Eliminar?")) {
+                clients = clients.filter(x => x.id != currentId);
+                localStorage.setItem('crm_key_v1', JSON.stringify(clients));
+                render();
+                closeM();
+            }
+        }
+
+        function render() {
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            let p=0, v=0, l=0;
+            clients.slice().reverse().forEach(c => {
+                if(c.status==='prospecto') p++; else if(c.status==='venta') v++; else l++;
+                const div = document.createElement('div');
+                div.className = `client-card status-${c.status}`;
+                div.innerHTML = `
+                    <div style="font-weight:bold">${c.name}</div>
+                    <div class="action-grid">
+                        <button class="btn-act btn-wa" onclick="sendWA('${c.phone}', '${c.name}')">WA</button>
+                        <button class="btn-act btn-mail" onclick="sendEmail('${c.email}', '${c.name}')">Mail</button>
+                        <button class="btn-act btn-edit" onclick="openM('${c.id}')">Edit</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+            document.getElementById('s-pros').innerText = p;
+            document.getElementById('s-sales').innerText = v;
+            document.getElementById('s-lost').innerText = l;
+            document.getElementById('s-total').innerText = clients.length;
+        }
+
+        function sendWA(phone, name) {
+            const msg = window.encodeURIComponent(`Hola ${name}, contacto contigo por la información solicitada.`);
+            window.open(`https://wa.me/52${phone.replace(/\D/g,'')}?text=${msg}`);
+        }
+
+        function sendEmail(email, name) {
+            const sub = window.encodeURIComponent(`Información para ${name}`);
+            const body = window.encodeURIComponent(`Hola ${name}, te envío la información solicitada.`);
+            window.location.href = `mailto:${email}?subject=${sub}&body=${body}`;
+        }
+
+        render();
+    </script>
+</body>
+</html>
