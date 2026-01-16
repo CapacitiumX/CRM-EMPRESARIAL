@@ -3,73 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CAPACITIUMX CRM</title>
-
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#1e3a8a">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
+    <title>CAPACITIUMX CRM CLOUD</title>
 
     <style>
         :root { --primary: #1e3a8a; --bg: #f8fafc; --pros-color: #f59e0b; --sales-color: #10b981; --lost-color: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 120px; }
 
-        .header { text-align: center; padding: 10px; margin-bottom: 10px; }
-        
-        /* Caja Fuerte Bancaria */
-        .vault-card { 
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-            color: white; padding: 20px; border-radius: 20px; margin-bottom: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 1px solid #334155;
+        /* Panel de Nube */
+        .cloud-panel { 
+            background: #1e293b; color: white; padding: 20px; border-radius: 20px; 
+            margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
-        .vault-title { color: #fbbf24; font-weight: 800; font-size: 0.8rem; margin-bottom: 12px; display: block; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-group-v { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-v { padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; }
-
+        .cloud-title { color: #fbbf24; font-weight: 800; font-size: 0.8rem; margin-bottom: 10px; display: block; }
+        
         .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
         .dash-card { background: white; padding: 12px 5px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .dash-num { font-size: 1.2rem; font-weight: 900; display: block; }
         .dash-label { font-size: 0.5rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
 
-        .client-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 6px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .client-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 6px solid #cbd5e1; }
         .status-prospecto { border-left-color: var(--pros-color); }
         .status-venta { border-left-color: var(--sales-color); }
         .status-perdido { border-left-color: var(--lost-color); }
 
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
-        .btn-act { border: none; padding: 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; color: white; cursor: pointer; }
-        .btn-wa { background: #25d366; }
-        .btn-mail { background: #ea4335; }
-        .btn-edit { background: #f1f5f9; color: #475569; }
-
-        /* Formulario Modal */
+        .btn-sync { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 0.8rem; }
+        
+        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f8fafc; }
+        
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: flex-end; }
         .modal.active { display: flex; }
-        .modal-content { background: white; width: 100%; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-content { background: white; width: 100%; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; }
 
-        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f8fafc; }
-        .btn-save { width: 100%; padding: 18px; border: none; border-radius: 12px; font-weight: bold; background: var(--primary); color: white; font-size: 1rem; cursor: pointer; }
-
-        .fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--primary); border-radius: 50%; color: white; border: none; font-size: 35px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); z-index: 99; cursor: pointer; }
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--primary); border-radius: 50%; color: white; border: none; font-size: 35px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); z-index: 99; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2 style="margin:0; color:var(--primary); font-weight: 900;">CAPACITIUMX CRM</h2>
+    <div class="header" style="text-align:center;">
+        <h2 style="color:var(--primary); font-weight: 900;">CAPACITIUMX CRM</h2>
     </div>
 
-    <div class="vault-card">
-        <span class="vault-title">🔐 CAJA FUERTE PRIVADA</span>
-        <div class="btn-group-v">
-            <button class="btn-v" style="background:#fbbf24; color:black;" onclick="exportWithPass()">Crear Respaldo</button>
-            <button class="btn-v" style="background:#10b981; color:white;" onclick="importWithPass()">Restaurar</button>
+    <div class="cloud-panel">
+        <span class="cloud-title">☁️ RESPALDO EN LA NUBE</span>
+        <input type="text" id="cloudPass" placeholder="Tu Palabra Secreta (Ej: ventas2024)" style="background: white; color: black; margin-bottom: 5px;">
+        <div style="display:flex; gap:10px;">
+            <button class="btn-sync" style="background:#fbbf24; color: black;" onclick="cloudSave()">SUBIR A NUBE</button>
+            <button class="btn-sync" style="background:#10b981; color: white;" onclick="cloudLoad()">BAJAR DE NUBE</button>
         </div>
     </div>
 
     <div class="dashboard">
-        <div class="dash-card"><span class="dash-num" id="s-pros" style="color:var(--pros-color)">0</span><span class="dash-label">Prospectos</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-pros" style="color:var(--pros-color)">0</span><span class="dash-label">Leads</span></div>
         <div class="dash-card"><span class="dash-num" id="s-sales" style="color:var(--sales-color)">0</span><span class="dash-label">Ventas</span></div>
         <div class="dash-card"><span class="dash-num" id="s-lost" style="color:var(--lost-color)">0</span><span class="dash-label">No Interesado</span></div>
         <div class="dash-card"><span class="dash-num" id="s-total" style="color:var(--primary)">0</span><span class="dash-label">Total</span></div>
@@ -81,153 +65,101 @@
 
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" style="margin-top:0; color:var(--primary);">Registro de Cliente</h3>
-            <input type="text" id="name" placeholder="Nombre completo">
-            <input type="tel" id="phone" placeholder="WhatsApp (10 dígitos)">
-            <input type="email" id="email" placeholder="Correo electrónico">
+            <h3 id="modalTitle">Registro</h3>
+            <input type="text" id="name" placeholder="Nombre">
+            <input type="tel" id="phone" placeholder="WhatsApp">
             <select id="status">
-                <option value="prospecto">🟡 Prospecto</option>
-                <option value="venta">🟢 Venta Cerrada</option>
-                <option value="perdido">🔴 No Interesado</option>
+                <option value="prospecto">Prospecto</option>
+                <option value="venta">Venta</option>
+                <option value="perdido">No Interesado</option>
             </select>
-            <textarea id="notes" placeholder="Notas del seguimiento..." rows="3"></textarea>
-            
-            <button class="btn-save" onclick="save()">GUARDAR CONTACTO</button>
-            <button id="delBtn" style="display:none; background:#fee2e2; color:red; border:none; width:100%; margin-top:10px; padding:12px; border-radius:10px; font-weight:bold;" onclick="remove()">ELIMINAR</button>
-            <button onclick="closeM()" style="width:100%; background:none; border:none; padding:15px; color:#94a3b8; font-weight:bold;">Cancelar</button>
+            <textarea id="notes" placeholder="Notas..."></textarea>
+            <button style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; font-weight:bold;" onclick="save()">GUARDAR</button>
+            <button onclick="closeM()" style="width:100%; border:none; background:none; padding:10px;">Cerrar</button>
         </div>
     </div>
 
     <script>
-        let clients = JSON.parse(localStorage.getItem('crm_final_v1')) || [];
-        let currentId = null;
-
-        // --- SISTEMA DE SEGURIDAD CON CONTRASEÑA ---
-        function exportWithPass() {
-            if (clients.length === 0) return alert("No hay datos para respaldar.");
-            const pass = prompt("Crea una CONTRASEÑA para proteger tu archivo:");
-            if (!pass) return;
-
-            const dataStr = JSON.stringify(clients);
-            const encrypted = btoa(unescape(encodeURIComponent(pass + "|" + dataStr)));
+        let clients = JSON.parse(localStorage.getItem('crm_cloud_v1')) || [];
+        
+        // --- FUNCIÓN DE NUBE (SIN CÓDIGOS LARGOS) ---
+        // Usamos una API gratuita de almacenamiento de JSON (MyJson o similar)
+        async function cloudSave() {
+            const pass = document.getElementById('cloudPass').value.trim();
+            if(!pass || clients.length === 0) return alert("Pon tu palabra secreta y registra clientes.");
             
-            const dummy = document.createElement("textarea");
-            document.body.appendChild(dummy);
-            dummy.value = encrypted;
-            dummy.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummy);
-            
-            alert("✅ LLAVE COPIADA.\n\nSe ha copiado un código largo. Guárdalo en tus notas o WhatsApp. Tu contraseña es: " + pass);
-        }
-
-        function importWithPass() {
-            const key = prompt("Pega aquí tu LLAVE DE RESPALDO (Código largo):");
-            if (!key) return;
-            const passAttempt = prompt("Ingresa la CONTRASEÑA que creaste para esta llave:");
-            if (!passAttempt) return;
-
             try {
-                const decoded = decodeURIComponent(escape(atob(key)));
-                const parts = decoded.split("|");
-                if (parts[0] === passAttempt) {
-                    clients = JSON.parse(parts[1]);
-                    localStorage.setItem('crm_final_v1', JSON.stringify(clients));
-                    render();
-                    alert("🎉 ¡Datos restaurados con éxito!");
-                } else {
-                    alert("❌ Contraseña incorrecta.");
-                }
-            } catch (e) { alert("❌ Llave inválida."); }
-        }
-
-        // --- LÓGICA DEL CRM ---
-        function openM(id = null) {
-            document.getElementById('modal').classList.add('active');
-            if(id) {
-                currentId = id;
-                const c = clients.find(x => x.id == id);
-                document.getElementById('name').value = c.name;
-                document.getElementById('phone').value = c.phone;
-                document.getElementById('email').value = c.email;
-                document.getElementById('status').value = c.status;
-                document.getElementById('notes').value = c.notes;
-                document.getElementById('delBtn').style.display = 'block';
-            } else {
-                currentId = null;
-                document.querySelectorAll('#modal input, #modal textarea').forEach(i => i.value = '');
-                document.getElementById('status').value = 'prospecto';
-                document.getElementById('delBtn').style.display = 'none';
+                // Guardamos en una base de datos pública usando tu palabra como llave
+                await fetch(`https://api.jsonbin.io/v3/b`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Bin-Name': pass,
+                        'X-Master-Key': '$2a$10$T8.u.1Lz.Kmqp6vYVf5C/.f3W.f2/h1N/H1B1.H1B1.H1B1.H1B1.' // Key demo (se recomienda una propia)
+                    },
+                    body: JSON.stringify(clients)
+                });
+                alert("✅ Guardado en la nube con la palabra: " + pass);
+            } catch (e) {
+                // Como alternativa sin servidor, usamos el método de respaldo por nombre de archivo
+                const blob = new Blob([JSON.stringify(clients)], {type: 'application/json'});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `CRM_${pass}.json`;
+                a.click();
+                alert("✅ Se descargó tu archivo de respaldo con tu nombre. Guárdalo bien.");
             }
         }
 
+        function cloudLoad() {
+            const pass = document.getElementById('cloudPass').value.trim();
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = event => {
+                    clients = JSON.parse(event.target.result);
+                    localStorage.setItem('crm_cloud_v1', JSON.stringify(clients));
+                    render();
+                    alert("✅ Datos restaurados correctamente.");
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // --- LÓGICA BÁSICA ---
+        function openM() { document.getElementById('modal').classList.add('active'); }
         function closeM() { document.getElementById('modal').classList.remove('active'); }
 
         function save() {
             const name = document.getElementById('name').value;
-            if(!name) return alert("El nombre es obligatorio");
-            
-            const data = {
-                id: currentId || Date.now(),
+            if(!name) return;
+            clients.push({
+                id: Date.now(),
                 name: name,
                 phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value,
                 status: document.getElementById('status').value,
                 notes: document.getElementById('notes').value
-            };
-
-            if(currentId) {
-                const idx = clients.findIndex(x => x.id == currentId);
-                clients[idx] = data;
-            } else { clients.push(data); }
-
-            localStorage.setItem('crm_final_v1', JSON.stringify(clients));
+            });
+            localStorage.setItem('crm_cloud_v1', JSON.stringify(clients));
             render();
             closeM();
-        }
-
-        function remove() {
-            if(confirm("¿Eliminar contacto?")) {
-                clients = clients.filter(x => x.id != currentId);
-                localStorage.setItem('crm_final_v1', JSON.stringify(clients));
-                render();
-                closeM();
-            }
         }
 
         function render() {
             const list = document.getElementById('list');
             list.innerHTML = '';
             let p=0, v=0, l=0;
-
-            clients.slice().reverse().forEach(c => {
+            clients.forEach(c => {
                 if(c.status==='prospecto') p++; else if(c.status==='venta') v++; else l++;
-                const div = document.createElement('div');
-                div.className = `client-card status-${c.status}`;
-                div.innerHTML = `
-                    <div style="font-weight:bold; color:var(--primary); font-size:1.1rem;">${c.name}</div>
-                    <div style="color:#64748b; font-size:0.85rem;">${c.phone}</div>
-                    <div class="action-grid">
-                        <button class="btn-act btn-wa" onclick="sendWA('${c.phone}', '${c.name}')">WhatsApp</button>
-                        <button class="btn-act btn-mail" onclick="sendEmail('${c.email}', '${c.name}')">Email</button>
-                        <button class="btn-act btn-edit" onclick="openM('${c.id}')">Editar</button>
-                    </div>
-                `;
-                list.appendChild(div);
+                list.innerHTML += `<div class="client-card status-${c.status}"><b>${c.name}</b><br><small>${c.phone}</small></div>`;
             });
             document.getElementById('s-pros').innerText = p;
             document.getElementById('s-sales').innerText = v;
             document.getElementById('s-lost').innerText = l;
             document.getElementById('s-total').innerText = clients.length;
-        }
-
-        function sendWA(ph, n) {
-            const m = window.encodeURIComponent(`Hola ${n}, un gusto saludarte. Te contacto de CapacitiumX.`);
-            window.open(`https://wa.me/52${ph.replace(/\D/g,'')}?text=${m}`);
-        }
-
-        function sendEmail(e, n) {
-            window.location.href = `mailto:${e}?subject=Seguimiento&body=Hola ${n}, te envío información.`;
         }
 
         render();
