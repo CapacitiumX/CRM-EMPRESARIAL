@@ -3,108 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CAPACITIUMX CRM - Private Edition</title>
+    <title>CAPACITIUMX CRM</title>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1e3a8a">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3652/3652191.png">
+
     <style>
-        :root { --primary: #1e3a8a; --bg: #f8fafc; --pros-color: #f59e0b; --sales-color: #10b981; }
+        :root { --primary: #1e3a8a; --bg: #f8fafc; --pros-color: #f59e0b; --sales-color: #10b981; --lost-color: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 120px; }
+
+        .header { text-align: center; padding: 10px; margin-bottom: 10px; }
         
-        /* Caja Fuerte Estilo Bancario */
+        /* Caja Fuerte Bancaria */
         .vault-card { 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-            color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            color: white; padding: 20px; border-radius: 20px; margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 1px solid #334155;
         }
-        .vault-title { color: #fbbf24; font-weight: 800; font-size: 0.9rem; margin-bottom: 15px; display: block; }
-        
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-v { padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
-        
-        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
-        .dash-card { background: white; padding: 10px 5px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .dash-num { font-size: 1.2rem; font-weight: 900; display: block; color: var(--primary); }
-        .dash-label { font-size: 0.5rem; font-weight: bold; color: #64748b; text-transform: uppercase; }
+        .vault-title { color: #fbbf24; font-weight: 800; font-size: 0.8rem; margin-bottom: 12px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-group-v { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-v { padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; }
 
-        .client-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 6px solid #cbd5e1; }
+        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+        .dash-card { background: white; padding: 12px 5px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .dash-num { font-size: 1.2rem; font-weight: 900; display: block; }
+        .dash-label { font-size: 0.5rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
+
+        .client-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 6px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .status-prospecto { border-left-color: var(--pros-color); }
         .status-venta { border-left-color: var(--sales-color); }
+        .status-perdido { border-left-color: var(--lost-color); }
 
-        .fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--primary); border-radius: 50%; color: white; border: none; font-size: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .btn-act { border: none; padding: 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; color: white; cursor: pointer; }
+        .btn-wa { background: #25d366; }
+        .btn-mail { background: #ea4335; }
+        .btn-edit { background: #f1f5f9; color: #475569; }
+
+        /* Formulario Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: flex-end; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; width: 100%; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #f8fafc; }
+        .btn-save { width: 100%; padding: 18px; border: none; border-radius: 12px; font-weight: bold; background: var(--primary); color: white; font-size: 1rem; cursor: pointer; }
+
+        .fab { position: fixed; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--primary); border-radius: 50%; color: white; border: none; font-size: 35px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); z-index: 99; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header" style="text-align:center; padding:10px;">
+    <div class="header">
         <h2 style="margin:0; color:var(--primary); font-weight: 900;">CAPACITIUMX CRM</h2>
     </div>
 
     <div class="vault-card">
         <span class="vault-title">🔐 CAJA FUERTE PRIVADA</span>
-        <p style="font-size: 0.7rem; opacity: 0.8; margin-bottom: 15px;">Protege tu información con una contraseña propia.</p>
-        
-        <div class="btn-group">
-            <button class="btn-v" style="background:#fbbf24; color:black;" onclick="exportWithPassword()">CREAR RESPALDO</button>
-            <button class="btn-v" style="background:#10b981; color:white;" onclick="importWithPassword()">RESTAURAR ACCESO</button>
+        <div class="btn-group-v">
+            <button class="btn-v" style="background:#fbbf24; color:black;" onclick="exportWithPass()">Crear Respaldo</button>
+            <button class="btn-v" style="background:#10b981; color:white;" onclick="importWithPass()">Restaurar</button>
         </div>
     </div>
 
     <div class="dashboard">
-        <div class="dash-card"><span class="dash-num" id="s-pros">0</span><span class="dash-label">Leads</span></div>
-        <div class="dash-card"><span class="dash-num" id="s-sales">0</span><span class="dash-label">Ventas</span></div>
-        <div class="dash-card"><span class="dash-num" id="s-lost">0</span><span class="dash-label">Perdido</span></div>
-        <div class="dash-card"><span class="dash-num" id="s-total">0</span><span class="dash-label">Total</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-pros" style="color:var(--pros-color)">0</span><span class="dash-label">Prospectos</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-sales" style="color:var(--sales-color)">0</span><span class="dash-label">Ventas</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-lost" style="color:var(--lost-color)">0</span><span class="dash-label">No Interesado</span></div>
+        <div class="dash-card"><span class="dash-num" id="s-total" style="color:var(--primary)">0</span><span class="dash-label">Total</span></div>
     </div>
 
     <div id="list"></div>
 
-    <button class="fab" onclick="alert('Usa el botón de Guardar en el formulario para añadir clientes.')">+</button>
+    <button class="fab" onclick="openM()">+</button>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle" style="margin-top:0; color:var(--primary);">Registro de Cliente</h3>
+            <input type="text" id="name" placeholder="Nombre completo">
+            <input type="tel" id="phone" placeholder="WhatsApp (10 dígitos)">
+            <input type="email" id="email" placeholder="Correo electrónico">
+            <select id="status">
+                <option value="prospecto">🟡 Prospecto</option>
+                <option value="venta">🟢 Venta Cerrada</option>
+                <option value="perdido">🔴 No Interesado</option>
+            </select>
+            <textarea id="notes" placeholder="Notas del seguimiento..." rows="3"></textarea>
+            
+            <button class="btn-save" onclick="save()">GUARDAR CONTACTO</button>
+            <button id="delBtn" style="display:none; background:#fee2e2; color:red; border:none; width:100%; margin-top:10px; padding:12px; border-radius:10px; font-weight:bold;" onclick="remove()">ELIMINAR</button>
+            <button onclick="closeM()" style="width:100%; background:none; border:none; padding:15px; color:#94a3b8; font-weight:bold;">Cancelar</button>
+        </div>
+    </div>
 
     <script>
-        let clients = JSON.parse(localStorage.getItem('crm_secure_v1')) || [];
+        let clients = JSON.parse(localStorage.getItem('crm_final_v1')) || [];
+        let currentId = null;
 
-        // --- FUNCIÓN PARA QUE EL CLIENTE USE SU PROPIA CONTRASEÑA ---
-        function exportWithPassword() {
-            if (clients.length === 0) return alert("No hay datos para guardar.");
-            
-            const pass = prompt("CREA TU CONTRASEÑA PERSONAL:\n(Escribe algo que no olvides)");
+        // --- SISTEMA DE SEGURIDAD CON CONTRASEÑA ---
+        function exportWithPass() {
+            if (clients.length === 0) return alert("No hay datos para respaldar.");
+            const pass = prompt("Crea una CONTRASEÑA para proteger tu archivo:");
             if (!pass) return;
 
             const dataStr = JSON.stringify(clients);
-            // El secreto: Usamos su contraseña para "sellar" los datos
             const encrypted = btoa(unescape(encodeURIComponent(pass + "|" + dataStr)));
             
-            const tempInput = document.createElement("textarea");
-            document.body.appendChild(tempInput);
-            tempInput.value = encrypted;
-            tempInput.select();
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = encrypted;
+            dummy.select();
             document.execCommand("copy");
-            document.body.removeChild(tempInput);
+            document.body.removeChild(dummy);
             
-            alert("✅ ¡RESPALDO CREADO!\n\nSe ha copiado una 'Llave' a tu portapapeles. Guárdala en tus notas. Para abrirla después, el sistema te pedirá la contraseña: " + pass);
+            alert("✅ LLAVE COPIADA.\n\nSe ha copiado un código largo. Guárdalo en tus notas o WhatsApp. Tu contraseña es: " + pass);
         }
 
-        function importWithPassword() {
-            const key = prompt("PEGA AQUÍ TU LLAVE DE RESPALDO:");
+        function importWithPass() {
+            const key = prompt("Pega aquí tu LLAVE DE RESPALDO (Código largo):");
             if (!key) return;
-
-            const passAttempt = prompt("INGRESA TU CONTRASEÑA PERSONAL PARA DESBLOQUEAR:");
+            const passAttempt = prompt("Ingresa la CONTRASEÑA que creaste para esta llave:");
             if (!passAttempt) return;
 
             try {
                 const decoded = decodeURIComponent(escape(atob(key)));
                 const parts = decoded.split("|");
-                const originalPass = parts[0];
-                const data = JSON.parse(parts[1]);
-
-                if (passAttempt === originalPass) {
-                    clients = data;
-                    localStorage.setItem('crm_secure_v1', JSON.stringify(clients));
+                if (parts[0] === passAttempt) {
+                    clients = JSON.parse(parts[1]);
+                    localStorage.setItem('crm_final_v1', JSON.stringify(clients));
                     render();
-                    alert("🎉 ¡Acceso concedido! Datos restaurados.");
+                    alert("🎉 ¡Datos restaurados con éxito!");
                 } else {
-                    alert("❌ Contraseña incorrecta. No puedes ver los datos.");
+                    alert("❌ Contraseña incorrecta.");
                 }
-            } catch (e) {
-                alert("❌ Error: La llave no coincide o está dañada.");
+            } catch (e) { alert("❌ Llave inválida."); }
+        }
+
+        // --- LÓGICA DEL CRM ---
+        function openM(id = null) {
+            document.getElementById('modal').classList.add('active');
+            if(id) {
+                currentId = id;
+                const c = clients.find(x => x.id == id);
+                document.getElementById('name').value = c.name;
+                document.getElementById('phone').value = c.phone;
+                document.getElementById('email').value = c.email;
+                document.getElementById('status').value = c.status;
+                document.getElementById('notes').value = c.notes;
+                document.getElementById('delBtn').style.display = 'block';
+            } else {
+                currentId = null;
+                document.querySelectorAll('#modal input, #modal textarea').forEach(i => i.value = '');
+                document.getElementById('status').value = 'prospecto';
+                document.getElementById('delBtn').style.display = 'none';
+            }
+        }
+
+        function closeM() { document.getElementById('modal').classList.remove('active'); }
+
+        function save() {
+            const name = document.getElementById('name').value;
+            if(!name) return alert("El nombre es obligatorio");
+            
+            const data = {
+                id: currentId || Date.now(),
+                name: name,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                status: document.getElementById('status').value,
+                notes: document.getElementById('notes').value
+            };
+
+            if(currentId) {
+                const idx = clients.findIndex(x => x.id == currentId);
+                clients[idx] = data;
+            } else { clients.push(data); }
+
+            localStorage.setItem('crm_final_v1', JSON.stringify(clients));
+            render();
+            closeM();
+        }
+
+        function remove() {
+            if(confirm("¿Eliminar contacto?")) {
+                clients = clients.filter(x => x.id != currentId);
+                localStorage.setItem('crm_final_v1', JSON.stringify(clients));
+                render();
+                closeM();
             }
         }
 
@@ -112,14 +199,35 @@
             const list = document.getElementById('list');
             list.innerHTML = '';
             let p=0, v=0, l=0;
-            clients.forEach(c => {
+
+            clients.slice().reverse().forEach(c => {
                 if(c.status==='prospecto') p++; else if(c.status==='venta') v++; else l++;
-                list.innerHTML += `<div class="client-card status-${c.status}"><b>${c.name}</b><br><small>${c.phone}</small></div>`;
+                const div = document.createElement('div');
+                div.className = `client-card status-${c.status}`;
+                div.innerHTML = `
+                    <div style="font-weight:bold; color:var(--primary); font-size:1.1rem;">${c.name}</div>
+                    <div style="color:#64748b; font-size:0.85rem;">${c.phone}</div>
+                    <div class="action-grid">
+                        <button class="btn-act btn-wa" onclick="sendWA('${c.phone}', '${c.name}')">WhatsApp</button>
+                        <button class="btn-act btn-mail" onclick="sendEmail('${c.email}', '${c.name}')">Email</button>
+                        <button class="btn-act btn-edit" onclick="openM('${c.id}')">Editar</button>
+                    </div>
+                `;
+                list.appendChild(div);
             });
             document.getElementById('s-pros').innerText = p;
             document.getElementById('s-sales').innerText = v;
             document.getElementById('s-lost').innerText = l;
             document.getElementById('s-total').innerText = clients.length;
+        }
+
+        function sendWA(ph, n) {
+            const m = window.encodeURIComponent(`Hola ${n}, un gusto saludarte. Te contacto de CapacitiumX.`);
+            window.open(`https://wa.me/52${ph.replace(/\D/g,'')}?text=${m}`);
+        }
+
+        function sendEmail(e, n) {
+            window.location.href = `mailto:${e}?subject=Seguimiento&body=Hola ${n}, te envío información.`;
         }
 
         render();
